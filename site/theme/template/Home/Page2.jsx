@@ -9,14 +9,25 @@ import QueueAnim from 'rc-queue-anim';
 export default function Page2({ location }) {
   return (
     <ScrollOverPack scrollName="page2"
-      className="content-wrapper page" playScale={1} replay
-      hideProps={{ image: { reverse: true } }}
+                    className="content-wrapper page"
+                    playScale={1}
+                    replay
+                    hideProps={{ image: { reverse: true } }}
     >
-      <QueueAnim className="text-wrapper left-text" delay={300} key="text"
-        duration={550} type="bottom" leaveReverse
+      <QueueAnim className="text-wrapper left-text"
+                 delay={300}
+                 key="text"
+                 duration={550}
+                 type="bottom"
+                 leaveReverse
       >
-        <h2 key="h2"><FormattedMessage id="app.home.design-pattern" /></h2>
-        <p key="p" style={{ maxWidth: 260 }}><FormattedMessage id="app.home.pattern" /></p>
+        <h2 key="h2">
+          <FormattedMessage id="app.home.design-pattern" />
+        </h2>
+        <p key="p"
+           style={{ maxWidth: 260 }}>
+          <FormattedMessage id="app.home.pattern" />
+        </p>
         <div key="button">
           <Link to={{ query: location.query, pathname: '/docs/pattern/navigation' }}>
             <Button type="primary" size="large">
@@ -26,9 +37,10 @@ export default function Page2({ location }) {
           </Link>
         </div>
       </QueueAnim>
-      <TweenOne key="image" className="image2 image-wrapper"
-        animation={{ x: 0, opacity: 1, delay: 300, duration: 550 }}
-        style={{ transform: 'translateX(100px)', opacity: 0 }}
+      <TweenOne key="image"
+                className="image2 image-wrapper"
+                animation={{ x: 0, opacity: 1, delay: 300, duration: 550 }}
+                style={{ transform: 'translateX(100px)', opacity: 0 }}
       />
     </ScrollOverPack>
   );

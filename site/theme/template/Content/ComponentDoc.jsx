@@ -1,17 +1,38 @@
 import React from 'react';
+// 根据不同的路由改变文档的title
+// 参考: https://segmentfault.com/a/1190000010705479
 import DocumentTitle from 'react-document-title';
+// 多语言的实现
+// 参考: https://segmentfault.com/a/1190000005824920
 import { FormattedMessage } from 'react-intl';
+
 import classNames from 'classnames';
 import { Row, Col, Icon, Affix } from 'antd';
 import { getChildren } from 'jsonml.js/lib/utils';
 import Demo from './Demo';
 import EditButton from './EditButton';
 
+/**
+ * Doc 组件
+ */
 export default class ComponentDoc extends React.Component {
+  /**
+   * 定义类的静态变量
+   * @type {{intl: React.Validator<any>}}
+   * 参考: https://segmentfault.com/a/1190000002878442
+   * 任何想访问context里面的属性的组件都必须显式的指定一个contextTypes 的属性。
+   * 如果没有指定改属性，那么组件通过 this.context 访问属性将会出错。
+   * 如果你为一个组件指定了context，那么这个组件的子组件只要定义了contextTypes 属性，
+   * 就可以访问到父组件指定的context了
+   */
   static contextTypes = {
     intl: React.PropTypes.object,
   }
 
+  /**
+   * 构造器
+   * @param props
+   */
   constructor(props) {
     super(props);
 
@@ -20,6 +41,9 @@ export default class ComponentDoc extends React.Component {
     };
   }
 
+  /**
+   * 展开收缩事件
+   */
   handleExpandToggle = () => {
     this.setState({
       expandAll: !this.state.expandAll,
@@ -30,6 +54,10 @@ export default class ComponentDoc extends React.Component {
     const props = this.props;
     const { doc, location } = props;
     const { content, meta } = doc;
+    // 必须在 contextTypes 中定义 intl 对象
+    // 参考: https://segmentfault.com/a/1190000002878442
+    // https://segmentfault.com/a/1190000004636213
+    // context就像javascript中的全局变量，只有真正全局的东西才适合放在context中
     const locale = this.context.intl.locale;
     const demos = Object.keys(props.demos).map(key => props.demos[key]);
     const expand = this.state.expandAll;

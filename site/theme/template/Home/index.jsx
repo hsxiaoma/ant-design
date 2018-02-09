@@ -1,6 +1,11 @@
 import React from 'react';
+// 参考: https://segmentfault.com/a/1190000008217058
 import { injectIntl } from 'react-intl';
+// 根据不同的路由改变文档的title
+// 参考: https://segmentfault.com/a/1190000010705479
 import DocumentTitle from 'react-document-title';
+
+// 用户定义组件的引入
 import Link from './Link';
 import Banner from './Banner';
 import Page1 from './Page1';

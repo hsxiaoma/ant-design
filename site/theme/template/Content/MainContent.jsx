@@ -8,34 +8,80 @@ import config from '../../';
 
 const SubMenu = Menu.SubMenu;
 
+/**
+ * 获取激活的菜单
+ * @param props
+ * @returns {*}
+ */
 function getActiveMenuItem(props) {
   return props.params.children || props.location.pathname;
 }
 
+/**
+ * 将文件名转换为路径
+ * @param filename
+ * @returns {*|string}
+ */
 function fileNameToPath(filename) {
   const snippets = filename.replace(/(\/index)?((\.zh-CN)|(\.en-US))?\.md$/i, '').split('/');
   return snippets[snippets.length - 1];
 }
 
+/**
+ * 不是顶级菜单
+ * @param level
+ * @returns {boolean}
+ */
 function isNotTopLevel(level) {
   return level !== 'topLevel';
 }
 
+/**
+ * 主内容组件
+ */
 export default class MainContent extends React.Component {
+  /**
+   * 定义类的静态变量
+   * @type {{intl: React.Validator<any>}}
+   * 参考: https://segmentfault.com/a/1190000002878442
+   * 任何想访问context里面的属性的组件都必须显式的指定一个contextTypes 的属性。
+   * 如果没有指定改属性，那么组件通过 this.context 访问属性将会出错。
+   * 如果你为一个组件指定了context，那么这个组件的子组件只要定义了contextTypes 属性，
+   * 就可以访问到父组件指定的context了
+   */
   static contextTypes = {
     intl: PropTypes.object.isRequired,
   }
-
+  /**
+   * 构造器
+   * @param props
+   */
   constructor(props) {
     super(props);
     this.state = { openKeys: [] };
   }
 
+  /**
+   * 在初始化render之后只执行一次，在这个方法内，可以访问任何组件，
+   * componentDidMount()方法中的子组件在父组件之前执行
+   * 从这个函数开始，就可以和 JS 其他框架交互了，
+   * 例如设置计时 setTimeout 或者 setInterval，或者发起网络请求
+   * 参考: http://blog.csdn.net/ElinaVampire/article/details/51813677
+   */
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
     this.componentDidUpdate();
   }
 
+  /**
+   * 当props发生变化时执行，初始化render时不执行，
+   * 在这个回调函数里面，你可以根据属性的变化，
+   * 通过调用this.setState()来更新你的组件状态，
+   * 旧的属性还是可以通过this.props来获取,这里调用更新状态是安全的，
+   * 并不会触发额外的render调用
+   * 参考: http://blog.csdn.net/ElinaVampire/article/details/51813677
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps) {
     const prevModule = this.currentModule;
     this.currentModule = location.pathname.split('/')[2] || 'components';
@@ -51,6 +97,10 @@ export default class MainContent extends React.Component {
     }
   }
 
+  /**
+   * 组件更新结束之后执行，在初始化render时不执行
+   * 参考: http://blog.csdn.net/ElinaVampire/article/details/51813677
+   */
   componentDidUpdate() {
     if (!location.hash) {
       document.body.scrollTop = 0;
@@ -65,14 +115,29 @@ export default class MainContent extends React.Component {
     }
   }
 
+  /**
+   * 当组件要被从界面上移除的时候，就会调用componentWillUnmount(),
+   * 在这个函数中，可以做一些组件相关的清理工作，例如取消计时器、网络请求等
+   * 参考: http://blog.csdn.net/ElinaVampire/article/details/51813677
+   */
   componentWillUnmount() {
     clearTimeout(this.timer);
   }
 
+  /**
+   * 菜碟打开时的事件
+   * @param openKeys
+   */
   handleMenuOpenChange = (openKeys) => {
     this.setState({ openKeys });
   }
 
+  /**
+   * 生成菜单项
+   * @param isTop
+   * @param item
+   * @returns {*}
+   */
   generateMenuItem(isTop, item) {
     const locale = this.context.intl.locale;
     const key = fileNameToPath(item.filename);
@@ -98,6 +163,11 @@ export default class MainContent extends React.Component {
     );
   }
 
+  /**
+   * 生成子菜单
+   * @param obj
+   * @returns {*[]}
+   */
   generateSubMenuItems(obj) {
     const topLevel = (obj.topLevel || []).map(this.generateMenuItem.bind(this, true));
     const itemGroups = Object.keys(obj).filter(isNotTopLevel)
@@ -116,6 +186,11 @@ export default class MainContent extends React.Component {
     return [...topLevel, ...itemGroups];
   }
 
+  /**
+   * 获取模块数据
+   * @param props
+   * @returns {{meta: *}[] | *[]}
+   */
   getModuleData(props) {
     const pathname = props.location.pathname;
     const moduleName = /^components/.test(pathname) ?
@@ -128,6 +203,10 @@ export default class MainContent extends React.Component {
     return moduleData.filter(({ meta }) => !meta.filename.endsWith(excludedSuffix));
   }
 
+  /**
+   * 获取所有菜单项
+   * @returns {*[]}
+   */
   getMenuItems() {
     const moduleData = this.getModuleData(this.props);
     const menuItems = utils.getMenuItems(
@@ -147,6 +226,11 @@ export default class MainContent extends React.Component {
     return [...topLevel, ...subMenu];
   }
 
+  /**
+   * 扁平化菜单
+   * @param menu
+   * @returns {*}
+   */
   flattenMenu(menu) {
     if (menu.type === Menu.Item) {
       return menu;
@@ -155,10 +239,16 @@ export default class MainContent extends React.Component {
     if (Array.isArray(menu)) {
       return menu.reduce((acc, item) => acc.concat(this.flattenMenu(item)), []);
     }
-
+    // 使用递归
     return this.flattenMenu(menu.props.children);
   }
 
+  /**
+   * 获取底部导航
+   * @param menuItems
+   * @param activeMenuItem
+   * @returns {{prev: *, next: *}}
+   */
   getFooterNav(menuItems, activeMenuItem) {
     const menuItemsList = this.flattenMenu(menuItems);
     let activeMenuItemIndex = -1;

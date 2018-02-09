@@ -1,9 +1,17 @@
+
+// 把 Markdown 转为 React 单页网站的工具
+// https://github.com/benjycui/bisheng
+
+
 const path = require('path');
+
+// https://github.com/metalabdesign/css-split-webpack-plugin
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 
 function pickerGenerator(module) {
   const tester = new RegExp(`^docs/${module}`);
   return (markdownData) => {
+    console.log(`pickerGenerator module: ${module} >>> markdownData: `,markdownData);
     const filename = markdownData.meta.filename;
     if (tester.test(filename) &&
         !/\/demo$/.test(path.dirname(filename))) {

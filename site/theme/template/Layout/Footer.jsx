@@ -6,6 +6,10 @@ import { docVersions } from '../../';
 
 const Option = Select.Option;
 
+/**
+ * 检测是否支持本地存储
+ * @returns {boolean}
+ */
 function isLocalStorageNameSupported() {
   const testKey = 'test';
   const storage = window.localStorage;
@@ -20,7 +24,17 @@ function isLocalStorageNameSupported() {
 
 docVersions[antdVersion] = antdVersion;
 
+/**
+ * 页脚组件
+ */
 class Footer extends React.Component {
+  /**
+   * 在初始化render之后只执行一次，在这个方法内，可以访问任何组件，
+   * componentDidMount()方法中的子组件在父组件之前执行
+   * 从这个函数开始，就可以和 JS 其他框架交互了，
+   * 例如设置计时 setTimeout 或者 setInterval，或者发起网络请求
+   * 参考: http://blog.csdn.net/ElinaVampire/article/details/51813677
+   */
   componentDidMount() {
     // for some iOS
     // http://stackoverflow.com/a/14555361
@@ -62,7 +76,7 @@ class Footer extends React.Component {
 
   handleVersionChange = (url) => {
     window.location.href = window.location.href.replace(window.location.origin, url);
-  }
+  };
 
   render() {
     const options = Object.keys(docVersions).map(version => (
@@ -79,14 +93,20 @@ class Footer extends React.Component {
               </a>
             </div>
             <div>
-              <a target="_blank" rel="noopener noreferrer" href="https://github.com/dvajs/dva">dva</a> - <FormattedMessage id="app.footer.dva" />
+              <a target="_blank"
+                 rel="noopener noreferrer"
+                 href="https://github.com/dvajs/dva">dva</a> - <FormattedMessage id="app.footer.dva" />
             </div>
             <div>
-              <a target="_blank" rel="noopener noreferrer" href="https://github.com/dvajs/dva-cli">dva-cli</a> -
+              <a target="_blank"
+                 rel="noopener noreferrer"
+                 href="https://github.com/dvajs/dva-cli">dva-cli</a> -
               <FormattedMessage id="app.footer.scaffold" />
             </div>
             <div>
-              <a target="_blank" rel="noopener noreferrer" href="http://ant-tool.github.io">ant-tool</a> - <FormattedMessage id="app.footer.dev-tools" />
+              <a target="_blank"
+                 rel="noopener noreferrer"
+                 href="http://ant-tool.github.io">ant-tool</a> - <FormattedMessage id="app.footer.dev-tools" />
             </div>
           </li>
           <li>

@@ -21,9 +21,14 @@ module.exports = {
     '0.12.x': 'http://012x.ant.design',
     '1.x': 'http://1x.ant.design',
   },
+  /**
+   * 路由配置
+   */
   routes: {
     path: '/',
     component: './template/Layout/index',
+    // 参考: http://blog.csdn.net/sensyup/article/details/77749083
+    // 定义默认首页路由
     indexRoute: { component: './template/Home/index' },
     childRoutes: [{
       path: 'docs/practice/:children',
